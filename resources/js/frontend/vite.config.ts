@@ -9,14 +9,14 @@ export default defineConfig({
         vue(),
         vueDevTools(),
         laravel({
-            input: ['resources/js/frontend/src/main.ts'],
+            input: ['src/main.ts'],
             refresh: true,
         }),
     ],
     resolve: {
         alias: {
             vue: "vue/dist/vue.esm-bundler.js",
-            '@': fileURLToPath(new URL('./resources/js/frontend/src', import.meta.url))
+            '@': fileURLToPath(new URL('src', import.meta.url))
         },
     },
 });
