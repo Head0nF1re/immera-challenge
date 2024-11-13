@@ -47,4 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hasVerifiedPhoneNumber(): bool
+    {
+        return $this->phone_number_verified_at !== null;
+    }
 }
