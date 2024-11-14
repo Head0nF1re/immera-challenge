@@ -50,7 +50,7 @@ class UserFactory extends Factory
     public function unverifiedPhoneNumber(): static
     {
         return $this->state(fn (array $attributes) => [
-            'phone_verified_at' => null,
+            'phone_number_verified_at' => null,
         ]);
     }
 }

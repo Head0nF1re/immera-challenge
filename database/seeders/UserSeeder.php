@@ -18,11 +18,11 @@ class UserSeeder extends Seeder
             'password' => 'password',
         ]);
 
-        // User::factory()->withou->create([
-        //     'name' => 'Test User Without Verified Phone',
-        //     'email' => '2_test@test.com',
-        //     'password' => 'password',
-        // ]);
+        User::factory()->unverifiedPhoneNumber()->create([
+            'name' => 'Test User Without Verified Phone',
+            'email' => '2_test@test.com',
+            'password' => 'password',
+        ]);
 
         User::factory(10) 
             ->hasProducts(4)
