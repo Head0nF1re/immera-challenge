@@ -18,11 +18,13 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $name = rtrim(fake()->unique()->text(50), '.');
+
         // TODO: improve factory to guarantee unique combination of user_id and slug
         return [
             'user_id' => User::factory(),
-            'name' => rtrim(fake()->unique()->text(50), '.'),
-            'slug' => fn(array $attributes) => Str::slug($attributes['name']),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'description' => fake()->text(200),
         ];
     }

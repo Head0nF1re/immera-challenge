@@ -14,9 +14,15 @@ class UserSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'Test User With Verified Phone',
-            'email' => 'test@test.com',
+            'email' => '1_test@test.com',
             'password' => 'password',
         ]);
+
+        // User::factory()->withou->create([
+        //     'name' => 'Test User Without Verified Phone',
+        //     'email' => '2_test@test.com',
+        //     'password' => 'password',
+        // ]);
 
         User::factory(10) 
             ->hasProducts(4)
