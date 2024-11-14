@@ -3,13 +3,11 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
-use App\Rules\UniquePhoneNumber;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Propaganistas\LaravelPhone\PhoneNumber;
-use Propaganistas\LaravelPhone\Rules\Phone;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -29,27 +27,27 @@ class CreateNewUser implements CreatesNewUsers
             $input['phone_number'] = $phone->formatE164();
         }
 
-        Validator::make($input, 
-        [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique(User::class),
+        Validator::make($input,
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    'max:255',
+                    Rule::unique(User::class),
+                ],
+                'phone_number' => [
+                    'required',
+                    'phone:mobile',
+                    Rule::unique(User::class),
+                ],
+                'password' => $this->passwordRules(),
             ],
-            'phone_number' => [
-                'required',
-                'phone:mobile',
-                Rule::unique(User::class),
-            ],
-            'password' => $this->passwordRules(),
-        ], 
-        [
-            'phone' => 'The :attribute field must be a valid mobile number.',
-            'phone_number.unique' => 'The :attribute has already been taken.',
-        ])->validate();
+            [
+                'phone' => 'The :attribute field must be a valid mobile number.',
+                'phone_number.unique' => 'The :attribute has already been taken.',
+            ])->validate();
 
         return User::create([
             'name' => $input['name'],

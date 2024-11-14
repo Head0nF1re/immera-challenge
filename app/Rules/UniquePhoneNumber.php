@@ -14,7 +14,7 @@ use Propaganistas\LaravelPhone\PhoneNumber;
 /**
  * WIP
  */
-class UniquePhoneNumber implements ValidationRule, DataAwareRule, ValidatorAwareRule
+class UniquePhoneNumber implements DataAwareRule, ValidationRule, ValidatorAwareRule
 {
     /**
      * All of the data under validation.
@@ -39,11 +39,12 @@ class UniquePhoneNumber implements ValidationRule, DataAwareRule, ValidatorAware
     {
         $phone = new PhoneNumber($value ?? null, 'PT');
 
-        if (!$phone->isValid() || ($phone->isValid() && !$phone->isOfType('mobile'))) {
+        if (! $phone->isValid() || ($phone->isValid() && ! $phone->isOfType('mobile'))) {
             $fail('The :attribute field must be a valid mobile number.');
+
             return;
         }
-        
+
         // Transform to the saved format, unique rule may fail if there is a space between the numbers
         $this->data['phone_number'] = $phone->formatE164();
         $this->validator->addRules([$attribute => Rule::unique(User::class, 'phone_number')]);
@@ -57,7 +58,7 @@ class UniquePhoneNumber implements ValidationRule, DataAwareRule, ValidatorAware
     public function setData(array $data): static
     {
         $this->data = $data;
- 
+
         return $this;
     }
 
@@ -67,7 +68,7 @@ class UniquePhoneNumber implements ValidationRule, DataAwareRule, ValidatorAware
     public function setValidator(Validator $validator): static
     {
         $this->validator = $validator;
- 
+
         return $this;
     }
 }

@@ -15,11 +15,11 @@ class EnsureVerifiedPhoneNumber
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user()->hasVerifiedPhoneNumber())
-        {
+        if (! $request->user()->hasVerifiedPhoneNumber()) {
+
             return response()->json([
-                "message" => "Phone number is not verified",
-                "verify_phone_url" => route('auth.verify_phone_number')
+                'message' => 'Phone number is not verified',
+                'verify_phone_url' => route('auth.verify_phone_number'),
             ], Response::HTTP_FORBIDDEN);
         }
 

@@ -27,6 +27,8 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'phone_number' => fake('pt_PT')->unique()->e164PhoneNumber(), // not working as exptected
+            'phone_number_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
@@ -35,10 +37,20 @@ class UserFactory extends Factory
     /**
      * Indicate that the model's email address should be unverified.
      */
-    public function unverified(): static
+    public function unverifiedEmail(): static
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+    public function unverifiedPhoneNumber(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'phone_verified_at' => null,
         ]);
     }
 }
