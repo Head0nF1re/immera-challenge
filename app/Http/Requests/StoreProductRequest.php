@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class StoreProductRequest extends FormRequest
 {
@@ -15,6 +16,16 @@ class StoreProductRequest extends FormRequest
     {
         // User only needs to be authenticated, guaranteed by verified_user middleware
         return true;
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'slug' => Str::slug($this->name),
+        ]);
     }
 
     /**
@@ -29,7 +40,10 @@ class StoreProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('products')->where(fn (Builder $query) => $query->where('user_id', $this->user()->id)),
+            ],
+            'slug' => [
+                Rule::unique('products')
+                    ->where(fn (Builder $query) => $query->where('user_id', $this->user()->id)),
             ],
             'description' => [
                 'required',

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -17,9 +18,11 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        // TODO: improve factory to guarantee unique combination of user_id and slug
         return [
             'user_id' => User::factory(),
             'name' => rtrim(fake()->unique()->text(50), '.'),
+            'slug' => fn(array $attributes) => Str::slug($attributes['name']),
             'description' => fake()->text(200),
         ];
     }

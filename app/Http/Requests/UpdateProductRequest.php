@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -14,6 +15,16 @@ class UpdateProductRequest extends FormRequest
     public function authorize(): bool
     {
         return $this->user()->can('update', $this->product);
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'slug' => Str::slug($this->name),
+        ]);
     }
 
     /**
@@ -28,7 +39,11 @@ class UpdateProductRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('products')->where(fn (Builder $query) => $query->where('user_id', $this->user()->id)),
+            ],
+            'slug' => [
+                Rule::unique('products')
+                    ->where(fn (Builder $query) => $query->where('user_id', $this->user()->id))
+                    ->ignore($this->product->id),
             ],
             'description' => [
                 'required',
