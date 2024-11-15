@@ -1,17 +1,22 @@
 <?php
 
-use App\Features\Auth\VerifyPhoneNumber;
+use App\Features\Auth\SendSmsVerificationCode;
+use App\Features\Auth\VerifySmsCode;
 use App\Http\Controllers\ProductsController;
 use App\Http\Middleware\EnsureVerifiedPhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// verified_user middleware is defined in /bootstrap/app.php
+// verified_user (auth + verified phone) middleware is defined in /bootstrap/app.php
 Route::middleware('verified_user')->group(function () {
 
-    Route::post('/auth/verify-phone-number', VerifyPhoneNumber::class)
-        ->withoutMiddleware(EnsureVerifiedPhoneNumber::class)
-        ->name('auth.verify_phone_number');
+    Route::withoutMiddleware(EnsureVerifiedPhoneNumber::class)->group(function () {
+        Route::post('/auth/send-verification-code', SendSmsVerificationCode::class)
+            ->name('auth.send_verification_code');
+
+        Route::post('/auth/verify-code', VerifySmsCode::class)
+            ->name('auth.verify_code');
+    });
 
     Route::get('/user', function (Request $request) {
         return $request->user();

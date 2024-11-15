@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'password' => 'password',
         ]);
 
-        User::factory(10) 
+        User::factory(10)
             ->hasProducts(4)
             ->create();
     }

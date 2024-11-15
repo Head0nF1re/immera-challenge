@@ -2,7 +2,7 @@
 
 namespace App\Features\Auth\Fortify;
 
-use App\Features\Auth\VerifyPhoneNumber;
+use App\Features\Auth\SendSmsVerificationCode;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,11 +22,12 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        $phone = (new PhoneNumber($input['phone_number'] ?? null, 'PT'));
+        $inputPhoneNumber = &$input['phone_number'] ?? null;
 
+        $phone = (new PhoneNumber($inputPhoneNumber ?? null, 'PT'));
         // Transform to the saved format, unique rule may fail if there is a space between the numbers
         if ($phone->isValid()) {
-            $input['phone_number'] = $phone->formatE164();
+            $inputPhoneNumber = $phone->formatE164();
         }
 
         Validator::make($input,
@@ -51,15 +52,15 @@ class CreateNewUser implements CreatesNewUsers
                 'phone_number.unique' => 'The :attribute has already been taken.',
             ])->validate();
 
-        return DB::transaction(function() use ($input): User {
+        return DB::transaction(function () use ($input, $inputPhoneNumber): User {
             $user = User::create([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone_number' => $input['phone_number'],
+                'phone_number' => $inputPhoneNumber,
                 'password' => Hash::make($input['password']),
             ]);
 
-            VerifyPhoneNumber::dispatch($input['phone_number']);
+            SendSmsVerificationCode::dispatch($inputPhoneNumber);
 
             return $user;
         });

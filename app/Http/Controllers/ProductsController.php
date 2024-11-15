@@ -17,7 +17,7 @@ class ProductsController extends Controller
     public function index()
     {
         return Product::where('user_id', Auth::id())
-               ->paginate();
+            ->paginate();
     }
 
     /**
@@ -26,8 +26,8 @@ class ProductsController extends Controller
     public function store(StoreProductRequest $request)
     {
         $request->user()
-                ->products()
-                ->create($request->validated());
+            ->products()
+            ->create($request->validated());
 
         return response(status: Response::HTTP_CREATED);
     }
@@ -38,7 +38,7 @@ class ProductsController extends Controller
     public function show(Request $request, int $id)
     {
         $product = Product::where('user_id', Auth::id())
-            ->where('id', $id) 
+            ->where('id', $id)
             ->first();
 
         if (is_null($product)) {
@@ -58,7 +58,7 @@ class ProductsController extends Controller
         if (! $isUpdated) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong while updating the product'
+                'message' => 'Something went wrong while updating the product',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -77,7 +77,7 @@ class ProductsController extends Controller
         if (! $isDeleted) {
             return response(status: Response::HTTP_NOT_FOUND);
         }
-            
+
         return response()->noContent();
     }
 }

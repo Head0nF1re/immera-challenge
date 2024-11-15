@@ -2,9 +2,8 @@
 
 namespace App\Providers;
 
-use App\Infrastructure\Service\TwilioHttpClient;
+use App\Infrastructure\Services\TwilioService;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Twilio\Rest\Client as TwilioSdk;
 
@@ -15,11 +14,12 @@ class TwilioServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(TwilioHttpClient::class, function (Application $app) {
+        $this->app->scoped(TwilioService::class, function (Application $app) {
 
-            $client = new TwilioSdk(config('services.twilio.sid'), config('services.twilio.token'));
-            return new TwilioHttpClient($request);
-        })
+            $sdk = new TwilioSdk(config('services.twilio.sid'), config('services.twilio.token'));
+
+            return new TwilioService($sdk, config('services.twilio.service'));
+        });
     }
 
     /**

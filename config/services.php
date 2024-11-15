@@ -36,6 +36,7 @@ return [
     ],
 
     'twilio' => [
+        'service' => env('TWILIO_SERVICE'),
         'sid' => env('TWILIO_ACCOUNT_SID'),
         'token' => env('TWILIO_AUTH_TOKEN'),
         'base_url' => env('TWILIO_BASE_URL'),
