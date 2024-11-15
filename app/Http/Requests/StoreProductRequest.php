@@ -10,15 +10,6 @@ use Illuminate\Support\Str;
 class StoreProductRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        // User only needs to be authenticated, guaranteed by verified_user middleware
-        return true;
-    }
-
-    /**
      * Prepare the data for validation.
      */
     protected function prepareForValidation(): void

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Actions\Fortify;
+namespace App\Features\Auth\Fortify;
 
+use App\Features\Auth\VerifyPhoneNumber;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -49,11 +51,17 @@ class CreateNewUser implements CreatesNewUsers
                 'phone_number.unique' => 'The :attribute has already been taken.',
             ])->validate();
 
-        return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'phone_number' => $input['phone_number'],
-            'password' => Hash::make($input['password']),
-        ]);
+        return DB::transaction(function() use ($input): User {
+            $user = User::create([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'phone_number' => $input['phone_number'],
+                'password' => Hash::make($input['password']),
+            ]);
+
+            VerifyPhoneNumber::dispatch($input['phone_number']);
+
+            return $user;
+        });
     }
 }
