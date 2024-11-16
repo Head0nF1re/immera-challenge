@@ -46,3 +46,12 @@ password: password
 ```sh
 sail artisan migrate --seed
 ```
+
+Note: to run commands for the frontend (e.g. `npm`/`pnpm`), go inside the container:
+```sh
+sail shell
+cd Frontend
+npm
+```
+
+
