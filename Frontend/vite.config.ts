@@ -8,6 +8,9 @@ import {PrimeVueResolver} from '@primevue/auto-import-resolver';
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    __API_BASE_URL__: 'http://localhost/api',
+  },
   plugins: [
     vue(),
     vueDevTools(),

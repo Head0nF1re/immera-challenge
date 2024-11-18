@@ -19,7 +19,7 @@ class EnsureVerifiedPhoneNumber
 
             return response()->json([
                 'message' => 'Phone number is not verified',
-                'verify_phone_url' => route('auth.verify_phone_number'),
+                'verify_phone_url' => route('auth.send_verification_code'),
             ], Response::HTTP_FORBIDDEN);
         }
 
