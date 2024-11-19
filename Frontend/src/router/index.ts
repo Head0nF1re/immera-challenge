@@ -19,6 +19,22 @@ const router = createRouter({
       component: AboutView,
     },
     {
+      path: '/login',
+      name: 'login',
+      component: AboutView,
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: AboutView,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: AboutView,
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/products',
       name: 'products.list',
       component: AboutView,
@@ -39,7 +55,7 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const { isAuthenticated } = useAuthStore()
 
   if (to.meta.requiresAuth && !isAuthenticated) {
