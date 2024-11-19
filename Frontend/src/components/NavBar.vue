@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { PrimeIcons } from '@primevue/core/api';
+import { useAuthStore } from "@/stores/authStore";
 
-const items = ref([
+const authItems = ref([
     {
         label: 'Home',
         icon: PrimeIcons.HOME,
@@ -11,23 +12,29 @@ const items = ref([
     {
         label: 'Products',
         icon: PrimeIcons.BOX,
-        route: '/products'
+        route: '/products',
+    },
+]);
+
+const guestItems = ref([
+    {
+        label: 'Home',
+        icon: PrimeIcons.HOME,
+        route: '/',
     },
     {
-        label: '',
-        icon: 'pi pi-home',
-        items: [
-            {
-                label: 'Vue.js',
-                url: 'https://vuejs.org/'
-            },
-            {
-                label: 'Vite.js',
-                url: 'https://vitejs.dev/'
-            }
-        ]
-    }
+        label: 'Login',
+        icon: PrimeIcons.SIGN_IN,
+        route: '/login',
+    },
+    {
+        label: 'Register',
+        icon: PrimeIcons.USER_PLUS,
+        route: '/register',
+    },
 ]);
+
+const authStore = useAuthStore();
 
 const isDarkMode = ref(document.documentElement.classList.contains('dark-mode'));
 
@@ -38,7 +45,7 @@ function toggleDarkMode() {
 </script>
 
 <template>
-    <Menubar :model="items">
+    <Menubar :model="authStore.isAuthenticated ? authItems : guestItems">
         <template #start>
             <svg width="35" height="40" viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8">
                 <path
@@ -62,7 +69,7 @@ function toggleDarkMode() {
                 <Button :icon="isDarkMode ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary"
                     aria-label="Toogle Dark Mode" @click="toggleDarkMode()" />
                 <!-- <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" /> -->
-                <Button :icon="PrimeIcons.USER" as="router-link" to="/profile" />
+                <Button v-if="authStore.isAuthenticated" :icon="PrimeIcons.USER" as="router-link" to="/profile" />
             </div>
         </template>
     </Menubar>
