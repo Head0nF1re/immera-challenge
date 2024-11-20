@@ -13,9 +13,12 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@primevue/forms": "^4.2.2",
     "@primevue/themes": "^4.2.2",
     "@tanstack/vue-query": "^5.60.5",
+    "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.7",
+    "js-cookie": "^3.0.5",
     "pinia": "^2.2.6",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.2",

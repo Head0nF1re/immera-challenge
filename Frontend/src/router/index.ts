@@ -1,9 +1,11 @@
 import { useAuthStore } from '@/stores/authStore'
 import { createRouter, createWebHistory } from 'vue-router'
 
-const HomeView = () => import('../views/HomeView.vue')
-const AboutView = () => import('../views/AboutView.vue')
-const NotFoundView = () => import('../views/NotFoundView.vue')
+const HomeView = () => import('@/views/HomeView.vue')
+const LoginView = () => import('@/views/LoginView.vue')
+const RegisterView = () => import('@/views/RegisterView.vue')
+const AboutView = () => import('@/views/AboutView.vue')
+const NotFoundView = () => import('@/views/NotFoundView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,19 +16,16 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
-      component: AboutView,
-    },
-    {
       path: '/login',
       name: 'login',
-      component: AboutView,
+      component: LoginView,
+      meta: { requiresGuest: true },
     },
     {
       path: '/register',
       name: 'register',
-      component: AboutView,
+      component: RegisterView,
+      meta: { requiresGuest: true },
     },
     {
       path: '/profile',
@@ -60,6 +59,10 @@ router.beforeEach((to) => {
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return { name: 'login', query: { redirect: to.fullPath } }
+  }
+
+  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    return { name: 'home' }
   }
 })
 

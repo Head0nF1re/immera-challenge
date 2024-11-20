@@ -1,5 +1,7 @@
-import axios from 'axios'
+import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { useRoute, useRouter } from 'vue-router'
+import Cookies from 'js-cookie'
+import { getCsrfCookie } from '@/api/authApi'
 
 const httpClient = axios.create({
   baseURL: __API_BASE_URL__,
@@ -11,19 +13,34 @@ const httpClient = axios.create({
   withXSRFToken: true,
 })
 
+const csrfMethods = ['post', 'put', 'patch', 'delete']
+
+const addCsrfCookieIfNotExists = async (config: InternalAxiosRequestConfig<any>) => {
+  if (csrfMethods.includes(config.method!.toLowerCase()) && !Cookies.get('XSRF-TOKEN')) {
+    await getCsrfCookie()
+  }
+
+  return config
+}
+
+// TODO: add global router in order to use useRouter hook
+const redirectIfUnauthorized = (error) => {
+  const status = error.response ? error.response.status : null
+
+  if (status === 401) {
+    // useRouter().push({ name: 'login', query: { redirect: useRoute().fullPath } })
+  }
+
+  if (status === 404) {
+    // useRouter().push({ name: '404' })
+  }
+}
+
+httpClient.interceptors.request.use(addCsrfCookieIfNotExists)
+
 httpClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const status = error.response ? error.response.status : null
-
-    if (status === 401) {
-      useRouter().push({ name: 'login', query: { redirect: useRoute().fullPath } })
-    } else if (status === 404) {
-    } else {
-    }
-
-    return Promise.reject(error)
-  },
+  (error) => redirectIfUnauthorized(error),
 )
 
 export default httpClient

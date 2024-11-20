@@ -8,12 +8,14 @@ import App from './App.vue'
 import router from './router'
 import Aura from '@primevue/themes/aura'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import { ToastService } from 'primevue'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 app.use(VueQueryPlugin)
+app.use(ToastService)
 
 app.use(PrimeVue, {
   theme: {

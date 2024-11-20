@@ -9,7 +9,7 @@ import NavBar from '@/components/NavBar.vue';
         <NavBar />
       </slot>
     </header>
-    <main>
+    <main class="my-20">
       <slot></slot>
     </main>
     <footer>
