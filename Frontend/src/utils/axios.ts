@@ -15,7 +15,7 @@ const httpClient = axios.create({
 
 const csrfMethods = ['post', 'put', 'patch', 'delete']
 
-const addCsrfCookieIfNotExists = async (config: InternalAxiosRequestConfig<any>) => {
+const addCsrfCookieIfNotExists = async (config: InternalAxiosRequestConfig) => {
   if (csrfMethods.includes(config.method!.toLowerCase()) && !Cookies.get('XSRF-TOKEN')) {
     await getCsrfCookie()
   }

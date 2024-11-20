@@ -1,6 +1,6 @@
 import httpClient from '@/utils/axios'
 import { useRouter } from 'vue-router'
-import type { ILoginRequest, IRegisterRequest } from './authApiTypes'
+import type { ILoginRequest, RegisterRequest } from './authApiTypes'
 import Cookies from 'js-cookie'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -15,7 +15,7 @@ export const login = async (loginRequest: ILoginRequest) => {
     .then(() => useAuthStore().setIsAuthenticatedTo(true))
 }
 
-export const register = async (registerRequest: IRegisterRequest) => {
+export const register = async (registerRequest: RegisterRequest) => {
   Cookies.remove('XSRF-TOKEN')
   await httpClient.post('/register', registerRequest)
 }

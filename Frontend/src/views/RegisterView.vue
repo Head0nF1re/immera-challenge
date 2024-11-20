@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { z } from 'zod';
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import { register } from '@/api/authApi';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
+import type { FormSubmitEvent } from '@primevue/forms';
+import { registerSchema, type RegisterRequest } from '@/api/authApiTypes';
 
 const router = useRouter();
 const authStore = useAuthStore()
@@ -17,19 +18,11 @@ const authStore = useAuthStore()
  * - confirm password; 
  * - add values to storage while not submited
  */
-const resolver = ref(zodResolver(
-    z.object({
-        name: z.string().trim().min(1, { message: 'Required' }).max(255),
-        email: z.string().email().max(255),
-        phone_number: z.string().min(9).max(13, { message: 'Phone number must be a valid Portuguese mobile number.' }),
-        password: z.string().min(8).max(255),
-        password_confirmation: z.string().min(8).max(255),
-    })
-));
+const resolver = ref(zodResolver(registerSchema));
 
-const onFormSubmit = async (form) => {
+const onFormSubmit = async (form: FormSubmitEvent) => {
     if (form.valid) {
-        await register(form.values)
+        await register(form.values as RegisterRequest)
             .then(() => {
                 authStore.isAuthenticated = true
                 router.push({ name: 'home' })
