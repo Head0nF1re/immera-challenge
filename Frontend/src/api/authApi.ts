@@ -1,8 +1,6 @@
 import httpClient from '@/utils/axios'
-import { useRouter } from 'vue-router'
-import type { ILoginRequest, RegisterRequest } from './authApiTypes'
+import type { ILoginRequest, IUser, RegisterRequest } from '@/types/authApiTypes'
 import Cookies from 'js-cookie'
-import { useAuthStore } from '@/stores/authStore'
 
 export const getCsrfCookie = async () => {
   return await httpClient.get('csrf-cookie')
@@ -10,21 +8,18 @@ export const getCsrfCookie = async () => {
 
 export const login = async (loginRequest: ILoginRequest) => {
   Cookies.remove('XSRF-TOKEN')
-  await httpClient
-    .post('/login', loginRequest)
-    .then(() => useAuthStore().setIsAuthenticatedTo(true))
+  return await httpClient.post('/login', loginRequest)
 }
 
 export const register = async (registerRequest: RegisterRequest) => {
-  Cookies.remove('XSRF-TOKEN')
-  await httpClient.post('/register', registerRequest)
+  return await httpClient.post('/register', registerRequest)
 }
 
-// export const getUserInfo = async () => {
-//   await httpClient.get('/me').then((x) => useAuthStore().setUser(x.data))
-// }
+export const getUserInfo = async () => {
+  return await httpClient.get<IUser>('/auth/me')
+}
 
 export const logout = async () => {
-  await httpClient.post('/logout').then(() => useAuthStore().setIsAuthenticatedTo(false))
-  useRouter().replace({ name: 'home' })
+  Cookies.remove('XSRF-TOKEN')
+  return await httpClient.post('/logout')
 }

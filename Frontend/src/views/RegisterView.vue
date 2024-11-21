@@ -1,34 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
 import BaseLayout from '@/layouts/BaseLayout.vue';
-import { register } from '@/api/authApi';
+import type { FormSubmitEvent } from '@primevue/forms';
+import { registerSchema, type RegisterRequest } from '@/types/authApiTypes';
+import { useRegister } from '@/composables/auth';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
-import type { FormSubmitEvent } from '@primevue/forms';
-import { registerSchema, type RegisterRequest } from '@/api/authApiTypes';
-
-const router = useRouter();
-const authStore = useAuthStore()
+import { ref } from 'vue';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
+import { useMutation } from '@tanstack/vue-query';
+import { getUserInfo, register } from '@/api/authApi';
 
 /**
  * TODO: 
- * - move auth logic to authStore
  * - Remove spaces from phone_number; 
  * - confirm password; 
  * - add values to storage while not submited
  */
-const resolver = ref(zodResolver(registerSchema));
+const { resolver, mutation } = useRegister()
+// const router = useRouter()
+// const authStore = useAuthStore()
+
+// const resolver = ref(zodResolver(registerSchema))
+
+// const mutation = useMutation({
+//     mutationFn: register,
+//     onSuccess: async () => {
+//         return await getUserInfo().then((res) => {
+//             authStore.storeUser(res.data)
+//             router.push({ name: 'home' })
+//         })
+//     },
+// })
 
 const onFormSubmit = async (form: FormSubmitEvent) => {
     if (form.valid) {
-        await register(form.values as RegisterRequest)
-            .then(() => {
-                authStore.isAuthenticated = true
-                router.push({ name: 'home' })
-            });
+        await mutation.mutateAsync(form.values as RegisterRequest)
     }
 };
+
 </script>
 
 <template>

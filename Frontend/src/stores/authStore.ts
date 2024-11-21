@@ -1,12 +1,30 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import type { IUser } from '@/types/authApiTypes'
+import { LocalStorage } from '@/utils/localStorage'
 
 export const useAuthStore = defineStore('auth', () => {
-  const isAuthenticated = ref(false)
+  const localStorageUser = LocalStorage.getItem('user')
 
-  const setIsAuthenticatedTo = (loggedIn: boolean) => {
-    isAuthenticated.value = loggedIn
+  const isAuthenticated = ref(localStorageUser ? true : false)
+  const user = ref<IUser | null>(localStorageUser)
+
+  const storeUser = (userData: IUser) => {
+    user.value = userData
+    isAuthenticated.value = true
+    LocalStorage.setItem('user', userData)
   }
 
-  return { isAuthenticated, setIsAuthenticatedTo }
+  const removeUser = () => {
+    user.value = null
+    isAuthenticated.value = false
+    LocalStorage.removeItem('user')
+  }
+
+  return {
+    isAuthenticated,
+    user,
+    storeUser,
+    removeUser,
+  }
 })

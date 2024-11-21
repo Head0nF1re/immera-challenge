@@ -1,5 +1,16 @@
 import { z } from 'zod'
 
+export interface IUser {
+  id: number
+  name: string
+  email: string
+  email_verified_at: Date
+  phone_number: string
+  phone_number_verified_at: Date
+  created_at: Date
+  updated_at: Date
+}
+
 export interface ILoginRequest {
   email: string
   password: string

@@ -8,6 +8,7 @@ const httpClient = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    Origin: 'localhost',
   },
   withCredentials: true,
   withXSRFToken: true,
@@ -23,7 +24,6 @@ const addCsrfCookieIfNotExists = async (config: InternalAxiosRequestConfig) => {
   return config
 }
 
-// TODO: add global router in order to use useRouter hook
 const redirectIfUnauthorized = (error) => {
   const status = error.response ? error.response.status : null
 
@@ -32,7 +32,7 @@ const redirectIfUnauthorized = (error) => {
   }
 
   if (status === 404) {
-    // useRouter().push({ name: '404' })
+    useRouter().push({ name: '404' })
   }
 }
 
