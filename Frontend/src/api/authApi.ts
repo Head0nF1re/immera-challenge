@@ -12,6 +12,7 @@ export const login = async (loginRequest: ILoginRequest) => {
 }
 
 export const register = async (registerRequest: RegisterRequest) => {
+  Cookies.remove('XSRF-TOKEN')
   return await httpClient.post('/register', registerRequest)
 }
 
