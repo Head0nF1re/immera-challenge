@@ -11,20 +11,35 @@ export interface IUser {
   updated_at: Date
 }
 
-export interface ILoginRequest {
-  email: string
-  password: string
-}
+const emailSchema = z.string().email().max(255)
+const passwordSchema = z.string().min(8).max(255)
+
+export const registerSchema = z
+  .object({
+    name: z.string().trim().min(1, { message: 'Required' }).max(255),
+    email: emailSchema,
+    phone_number: z
+      .string()
+      .transform((value) => value.replace(/\s+/g, ''))
+      .pipe(
+        z
+          .string()
+          .min(9)
+          .max(13, { message: 'Phone number must be a valid Portuguese mobile number.' }),
+      ),
+    password: passwordSchema,
+    password_confirmation: passwordSchema,
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords don't match",
+    path: ['password_confirmation'],
+  })
 
 export type RegisterRequest = z.infer<typeof registerSchema>
 
-export const registerSchema = z.object({
-  name: z.string().trim().min(1, { message: 'Required' }).max(255),
-  email: z.string().email().max(255),
-  phone_number: z
-    .string()
-    .min(9)
-    .max(13, { message: 'Phone number must be a valid Portuguese mobile number.' }),
-  password: z.string().min(8).max(255),
-  password_confirmation: z.string().min(8).max(255),
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
 })
+
+export type LoginRequest = z.infer<typeof loginSchema>

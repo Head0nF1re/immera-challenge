@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { PrimeIcons } from '@primevue/core/api';
 import { useAuthStore } from "@/stores/authStore";
+import { useLogout } from "@/composables/auth";
 
 const authItems = ref([
     {
@@ -42,6 +43,11 @@ function toggleDarkMode() {
     document.documentElement.classList.toggle('dark-mode')
     isDarkMode.value = !isDarkMode.value;
 }
+
+const { mutation } = useLogout()
+const onLogout = async () => {
+    await mutation.mutateAsync()
+}
 </script>
 
 <template>
@@ -66,6 +72,8 @@ function toggleDarkMode() {
         </template>
         <template #end>
             <div class="flex items-center gap-2">
+                <Button v-if="authStore.isAuthenticated" :label="'Logout'" :icon="PrimeIcons.SIGN_OUT"
+                    severity="secondary" @click="onLogout" />
                 <Button :icon="isDarkMode ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary"
                     aria-label="Toogle Dark Mode" @click="toggleDarkMode()" />
                 <!-- <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" /> -->

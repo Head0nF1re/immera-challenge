@@ -1,31 +1,14 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useToast } from 'primevue/usetoast';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
-import { z } from 'zod';
 import BaseLayout from '@/layouts/BaseLayout.vue';
+import type { FormSubmitEvent } from '@primevue/forms';
+import type { LoginRequest } from '@/types/authApiTypes';
+import { useLogin } from '@/composables/auth';
 
-const toast = useToast();
+const { resolver, mutation } = useLogin()
 
-const initialValues = reactive({
-    username: '',
-});
-
-const resolver = ref(zodResolver(
-    z.object({
-        email: z.string().email().max(255),
-        password: z.string().email().max(255),
-        passwordConfirmation: z.string().email().max(255)
-    })
-));
-
-const onFormSubmit = ({ valid }) => {
-    if (valid) {
-        toast.add({
-            severity: 'success',
-            summary: 'Form is submitted.',
-            life: 3000
-        });
+const onFormSubmit = async (form: FormSubmitEvent) => {
+    if (form.valid) {
+        await mutation.mutateAsync(form.values as LoginRequest)
     }
 };
 </script>
@@ -33,15 +16,19 @@ const onFormSubmit = ({ valid }) => {
 <template>
     <BaseLayout>
         <div class="card flex justify-center">
-            <Toast />
+            <Form :resolver @submit="onFormSubmit" class="flex flex-col gap-4 w-full sm:w-56">
+                <FormField v-slot="$field" name="email" class="flex flex-col gap-1">
+                    <InputText type="email" placeholder="Email" />
+                    <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                        $field.error?.message }}</Message>
+                </FormField>
 
-            <Form v-slot="$form" :initialValues :resolver @submit="onFormSubmit"
-                class="flex flex-col gap-4 w-full sm:w-56">
-                <div class="flex flex-col gap-1">
-                    <InputText name="email" type="text" placeholder="Email" fluid />
-                    <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{
-                        $form.email.error?.message }}</Message>
-                </div>
+                <FormField v-slot="$field" name="password" class="flex flex-col gap-1">
+                    <Password type="password" placeholder="Password" :feedback="false" toggleMask fluid />
+                    <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
+                        $field.error?.message }}</Message>
+                </FormField>
+
                 <Button type="submit" severity="secondary" label="Submit" />
             </Form>
         </div>
