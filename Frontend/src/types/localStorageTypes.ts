@@ -1,4 +1,4 @@
-import type { IUser } from '@/types/authApiTypes'
+import type { IUser } from '@/types/api/authApiTypes'
 
 export type LocalStorageValues = {
   user: IUser

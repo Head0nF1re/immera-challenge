@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import type { FormSubmitEvent } from '@primevue/forms';
-import type { LoginRequest } from '@/types/authApiTypes';
+import type { LoginRequest } from '@/types/api/authApiTypes';
 import { useLogin } from '@/composables/auth';
 
-const { resolver, mutation } = useLogin()
+const {
+    resolver,
+    mutation: { isPending, isError, error, mutate: login }
+} = useLogin()
 
 const onFormSubmit = async (form: FormSubmitEvent) => {
     if (form.valid) {
-        await mutation.mutateAsync(form.values as LoginRequest)
+        login(form.values as LoginRequest)
     }
 };
 </script>
@@ -29,7 +32,11 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                         $field.error?.message }}</Message>
                 </FormField>
 
-                <Button type="submit" severity="secondary" label="Submit" />
+                <Message v-if="isError" severity="error" size="small" variant="simple">
+                    {{ error.response.data.message }}
+                </Message>
+
+                <Button type="submit" severity="secondary" label="Submit" :disabled="isPending" />
             </Form>
         </div>
     </BaseLayout>

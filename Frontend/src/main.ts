@@ -6,28 +6,17 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import App from './App.vue'
 import router from './router'
-import Aura from '@primevue/themes/aura'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { ToastService } from 'primevue'
+import { vueQueryPluginOptions } from './plugins/vueQuery'
+import { primeVueOptions } from './plugins/primeVue'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(VueQueryPlugin)
+app.use(VueQueryPlugin, vueQueryPluginOptions)
 app.use(ToastService)
-
-app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-    options: {
-      darkModeSelector: '.dark-mode',
-      cssLayer: {
-        name: 'primevue',
-        order: 'tailwind-base, primevue, tailwind-utilities',
-      },
-    },
-  },
-})
+app.use(PrimeVue, primeVueOptions)
 
 app.mount('#app')

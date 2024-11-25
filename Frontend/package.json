@@ -16,6 +16,7 @@
     "@primevue/forms": "^4.2.2",
     "@primevue/themes": "^4.2.2",
     "@tanstack/vue-query": "^5.60.5",
+    "@tanstack/vue-query-devtools": "^5.61.3",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.7",
     "js-cookie": "^3.0.5",

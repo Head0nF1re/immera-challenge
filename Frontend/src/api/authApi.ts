@@ -1,5 +1,5 @@
 import httpClient from '@/utils/axios'
-import type { IUser, LoginRequest, RegisterRequest } from '@/types/authApiTypes'
+import type { IUser, LoginRequest, RegisterRequest } from '@/types/api/authApiTypes'
 import Cookies from 'js-cookie'
 
 export const getCsrfCookie = async () => {

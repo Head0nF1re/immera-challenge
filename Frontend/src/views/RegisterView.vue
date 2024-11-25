@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import type { FormSubmitEvent } from '@primevue/forms';
-import type { RegisterRequest } from '@/types/authApiTypes';
+import type { RegisterRequest } from '@/types/api/authApiTypes';
 import { useRegister } from '@/composables/auth';
 
-const { resolver, mutation } = useRegister()
+const {
+    resolver,
+    mutation: { isPending, isError, error, mutate: register }
+} = useRegister()
 
 const onFormSubmit = async (form: FormSubmitEvent) => {
     if (form.valid) {
-        await mutation.mutateAsync(form.values as RegisterRequest)
+        register(form.values as RegisterRequest)
     }
 };
 </script>
@@ -46,7 +49,12 @@ const onFormSubmit = async (form: FormSubmitEvent) => {
                     <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
                         $field.error?.message }}</Message>
                 </FormField>
-                <Button type="submit" severity="secondary" label="Submit" />
+
+                <Message v-if="isError" severity="error" size="small" variant="simple">
+                    {{ error.response.data.message }}
+                </Message>
+
+                <Button type="submit" severity="secondary" label="Submit" :disabled="isPending" />
             </Form>
         </div>
     </BaseLayout>

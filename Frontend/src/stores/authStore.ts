@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { IUser } from '@/types/authApiTypes'
+import type { IUser } from '@/types/api/authApiTypes'
 import { LocalStorage } from '@/utils/localStorage'
 
 export const useAuthStore = defineStore('auth', () => {

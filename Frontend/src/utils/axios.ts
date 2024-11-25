@@ -1,8 +1,9 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios'
-import { useRoute, useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import { getCsrfCookie } from '@/api/authApi'
 import router from '@/router'
+import { LocalStorage } from './localStorage'
+import { useAuthStore } from '@/stores/authStore'
 
 const httpClient = axios.create({
   baseURL: __API_BASE_URL__,
@@ -27,13 +28,16 @@ const addCsrfCookieIfNotExists = async (config: InternalAxiosRequestConfig) => {
 const redirectIfUnauthorized = (error) => {
   const status = error.response ? error.response.status : null
 
-  if (status === 401) {
+  if (status === 401 || status === 419) {
+    useAuthStore().removeUser()
     router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
   }
 
   if (status === 404) {
     router.push({ name: '404' })
   }
+
+  throw error
 }
 
 httpClient.interceptors.request.use(addCsrfCookieIfNotExists)

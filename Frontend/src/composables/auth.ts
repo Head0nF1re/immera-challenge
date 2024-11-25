@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/vue-query'
-import { loginSchema, registerSchema } from '@/types/authApiTypes'
+import { loginSchema, registerSchema } from '@/types/api/authApiTypes'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
