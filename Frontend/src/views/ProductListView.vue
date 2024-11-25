@@ -2,23 +2,10 @@
 import { getAllProducts } from '@/api/productApi';
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import { useQuery } from '@tanstack/vue-query';
+import { useRouteQuery } from '@vueuse/router';
 import type { PageState } from 'primevue';
-import { ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
-const route = useRoute()
-const router = useRouter()
-const pageQuery = typeof route.query.page === 'string' ? parseInt(route.query.page) : 1
-const pageNumber = ref(pageQuery)
-
-watch(
-    () => route.query,
-    (newQuery) => {
-        console.log(newQuery)
-        const pageQuery = typeof newQuery.page === 'string' ? parseInt(newQuery.page) : 1
-        pageNumber.value = pageQuery
-    }
-)
+const pageNumber = useRouteQuery('page', 1, { mode: 'push', transform: Number })
 
 const { data: response, isLoading, refetch } = useQuery({
     queryKey: ['products', pageNumber],
@@ -27,7 +14,6 @@ const { data: response, isLoading, refetch } = useQuery({
 
 const onChangePage = async (e: PageState) => {
     pageNumber.value = e.page + 1
-    router.push({ name: route.name, query: { page: pageNumber.value } })
 }
 
 const onRefresh = async () => {
