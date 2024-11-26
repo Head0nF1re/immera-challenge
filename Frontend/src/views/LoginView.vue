@@ -9,7 +9,7 @@ const {
     mutation: { isPending, isError, error, mutate: login }
 } = useLogin()
 
-const onFormSubmit = async (form: FormSubmitEvent) => {
+const onFormSubmit = (form: FormSubmitEvent) => {
     if (form.valid) {
         login(form.values as LoginRequest)
     }

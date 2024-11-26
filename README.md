@@ -1,3 +1,7 @@
+> [!NOTE]
+> This project is a playground for practicing different features of Laravel and Vue.
+> That said, it may have a domain (and/or database schema) that doesn't make much sense in a real project since the focus is on practicing different technical features.
+
 ## Installation
 
 To run this project, do the following:

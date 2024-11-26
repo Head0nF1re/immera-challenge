@@ -77,7 +77,8 @@ const onLogout = async () => {
                 <Button :icon="isDarkMode ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary"
                     aria-label="Toogle Dark Mode" @click="toggleDarkMode()" />
                 <!-- <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle" /> -->
-                <Button v-if="authStore.isAuthenticated" :icon="PrimeIcons.USER" as="router-link" to="/profile" />
+                <Button v-if="authStore.isAuthenticated" :icon="PrimeIcons.USER" severity="secondary" as="router-link"
+                    to="/profile" />
             </div>
         </template>
     </Menubar>
