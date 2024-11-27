@@ -66,7 +66,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * Soft delete
+     * Delete product
      */
     public function destroy(int $id)
     {
