@@ -12,7 +12,7 @@ import NavBar from '@/components/NavBar.vue';
     <main class="my-20">
       <slot></slot>
     </main>
-    <footer>
+    <footer class="mt-36">
       <slot name="footer">
         <div class="h-20 bg-primary fixed left-0 bottom-0 w-full content-center text-center">
           Example footer

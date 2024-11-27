@@ -2,11 +2,14 @@
 
 namespace App\Features\Auth\Fortify;
 
+use App\Features\Auth\SendSmsVerificationCode;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
@@ -17,9 +20,16 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     public function update(User $user, array $input): void
     {
+        $inputPhoneNumber = &$input['phone_number'] ?? null;
+
+        $phone = (new PhoneNumber($inputPhoneNumber ?? null, 'PT'));
+        // Transform to the saved format, unique rule may fail if there is a space between the numbers
+        if ($phone->isValid()) {
+            $inputPhoneNumber = $phone->formatE164();
+        }
+
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-
             'email' => [
                 'required',
                 'string',
@@ -27,6 +37,15 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'phone_number' => [
+                'required',
+                'phone:mobile',
+                Rule::unique(User::class)->ignore($user->id),
+            ],
+        ], 
+        [
+            'phone' => 'The :attribute field must be a valid mobile number.',
+            'phone_number.unique' => 'The :attribute has already been taken.',
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
@@ -36,7 +55,21 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
-            ])->save();
+                'phone_number' => $input['phone_number'],
+            ]);
+
+            DB::transaction(function () use ($input, $user, $inputPhoneNumber): void {
+                $user->name = $input['name'];
+                $user->email = $input['email'];
+
+                if ($user->phone_number != $inputPhoneNumber) {
+
+                    $user->phone_number = $inputPhoneNumber;
+                    SendSmsVerificationCode::dispatch($inputPhoneNumber);
+                }
+
+                $user->save();
+            });
         }
     }
 

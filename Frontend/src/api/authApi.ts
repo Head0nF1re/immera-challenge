@@ -1,5 +1,11 @@
 import httpClient from '@/utils/axios'
-import type { IUser, LoginRequest, RegisterRequest } from '@/types/api/authApiTypes'
+import type {
+  IUser,
+  LoginRequest,
+  RegisterRequest,
+  UpdatePasswordRequest,
+  UpdateProfileRequest,
+} from '@/types/api/authApiTypes'
 import Cookies from 'js-cookie'
 
 export const getCsrfCookie = async () => {
@@ -23,4 +29,12 @@ export const getUserInfo = async () => {
 export const logout = async () => {
   Cookies.remove('XSRF-TOKEN')
   return await httpClient.post('/logout')
+}
+
+export const updateProfile = async (updateProfile: UpdateProfileRequest) => {
+  return await httpClient.put('/user/profile-information', updateProfile)
+}
+
+export const updatePassword = async (updatePassword: UpdatePasswordRequest) => {
+  return await httpClient.put('/user/password', updatePassword)
 }

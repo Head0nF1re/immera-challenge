@@ -65,7 +65,6 @@ const updateProductInitialValues = {
 };
 
 const onEditProduct = (product: IProduct) => {
-    console.log(product.id)
     showUpdateProductModal.value = true
     updateProductInitialValues.id = product.id
     updateProductInitialValues.name = product.name

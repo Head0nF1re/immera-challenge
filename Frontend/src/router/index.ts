@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const HomeView = () => import('@/views/HomeView.vue')
 const LoginView = () => import('@/views/LoginView.vue')
 const RegisterView = () => import('@/views/RegisterView.vue')
+const ProfileView = () => import('@/views/ProfileView.vue')
 const AboutView = () => import('@/views/AboutView.vue')
 const NotFoundView = () => import('@/views/NotFoundView.vue')
 const ProductListView = () => import('@/views/ProductListView.vue')
@@ -31,7 +32,7 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: AboutView,
+      component: ProfileView,
       meta: { requiresAuth: true },
     },
     {
@@ -39,13 +40,13 @@ const router = createRouter({
       name: 'products.list',
       component: ProductListView,
       meta: { requiresAuth: true },
-      children: [
-        {
-          path: ':id',
-          name: 'products.item',
-          component: AboutView,
-        },
-      ],
+      // children: [
+      //   {
+      //     path: ':id',
+      //     name: 'products.item',
+      //     component: AboutView,
+      //   },
+      // ],
     },
     {
       path: '/:pathMatch(.*)*',
