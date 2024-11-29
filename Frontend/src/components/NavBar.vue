@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { PrimeIcons } from '@primevue/core/api';
 import { useAuthStore } from "@/stores/authStore";
 import { useLogout } from "@/composables/auth";
+import { useDarkMode } from "@/composables/darkMode";
 
 const authItems = ref([
     {
@@ -36,13 +37,8 @@ const guestItems = ref([
 ]);
 
 const authStore = useAuthStore();
+const { isDarkMode, toggleDarkMode } = useDarkMode()
 
-const isDarkMode = ref(document.documentElement.classList.contains('dark-mode'));
-
-function toggleDarkMode() {
-    document.documentElement.classList.toggle('dark-mode')
-    isDarkMode.value = !isDarkMode.value;
-}
 
 const { mutation } = useLogout()
 const onLogout = async () => {
