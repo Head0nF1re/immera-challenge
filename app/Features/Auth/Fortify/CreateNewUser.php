@@ -24,11 +24,8 @@ class CreateNewUser implements CreatesNewUsers
     {
         $inputPhoneNumber = &$input['phone_number'] ?? null;
 
-        $phone = (new PhoneNumber($inputPhoneNumber ?? null, 'PT'));
-        // Transform to the saved format, unique rule may fail if there is a space between the numbers
-        if ($phone->isValid()) {
-            $inputPhoneNumber = $phone->formatE164();
-        }
+        // Transform to a normalized format, unique rule may fail if there is a space between the numbers
+        $inputPhoneNumber = PhoneNumber::toFormatE164($inputPhoneNumber);
 
         Validator::make($input,
             [
@@ -56,7 +53,7 @@ class CreateNewUser implements CreatesNewUsers
             $user = User::create([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone_number' => $inputPhoneNumber,
+                'phone_number' => $input['phone_number'],
                 'password' => Hash::make($input['password']),
             ]);
 

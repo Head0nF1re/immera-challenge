@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Macros\PhoneNumberMacros;
 use Illuminate\Support\ServiceProvider;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        PhoneNumberMacros::register();
+        // PhoneNumber::macro('toFormatE164', function (?string $phoneNumber) {
+        //     $phone = (new PhoneNumber($phoneNumber, 'PT'));
+
+        //     if ($phone->isValid()) {
+        //         $phoneNumber = $phone->formatE164();
+        //     }
+
+        //     return $phoneNumber;
+        // });
     }
 }

@@ -22,11 +22,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     {
         $inputPhoneNumber = &$input['phone_number'] ?? null;
 
-        $phone = (new PhoneNumber($inputPhoneNumber ?? null, 'PT'));
-        // Transform to the saved format, unique rule may fail if there is a space between the numbers
-        if ($phone->isValid()) {
-            $inputPhoneNumber = $phone->formatE164();
-        }
+        // Transform to a normalized format, unique rule may fail if there is a space between the numbers
+        $inputPhoneNumber = PhoneNumber::toFormatE164($input['phone_number'] ?? null);
 
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -42,11 +39,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'phone:mobile',
                 Rule::unique(User::class)->ignore($user->id),
             ],
-        ], 
-        [
-            'phone' => 'The :attribute field must be a valid mobile number.',
-            'phone_number.unique' => 'The :attribute has already been taken.',
-        ])->validateWithBag('updateProfileInformation');
+        ],
+            [
+                'phone' => 'The :attribute field must be a valid mobile number.',
+                'phone_number.unique' => 'The :attribute has already been taken.',
+            ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
             $user instanceof MustVerifyEmail) {
