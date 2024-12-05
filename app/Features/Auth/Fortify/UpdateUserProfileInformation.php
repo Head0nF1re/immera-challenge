@@ -23,7 +23,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         $inputPhoneNumber = &$input['phone_number'] ?? null;
 
         // Transform to a normalized format, unique rule may fail if there is a space between the numbers
-        $inputPhoneNumber = PhoneNumber::toFormatE164($input['phone_number'] ?? null);
+        $inputPhoneNumber = PhoneNumber::toFormatE164($inputPhoneNumber);
 
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -49,11 +49,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
         } else {
-            $user->forceFill([
-                'name' => $input['name'],
-                'email' => $input['email'],
-                'phone_number' => $input['phone_number'],
-            ]);
 
             DB::transaction(function () use ($input, $user, $inputPhoneNumber): void {
                 $user->name = $input['name'];
