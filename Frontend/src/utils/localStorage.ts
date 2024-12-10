@@ -1,17 +1,17 @@
-import type { LocalStorageKeys, LocalStorageValues } from '@/types/localStorageTypes'
+import type { LocalStorageKeys, LocalStorageReturnTypeOfKey } from '@/types/localStorageTypes'
 
 export class LocalStorage {
-  static getItem<K extends LocalStorageKeys>(key: K): LocalStorageValues[K] | null {
+  static getItem<K extends LocalStorageKeys>(key: K): LocalStorageReturnTypeOfKey<K> | null {
     try {
       const item = localStorage.getItem(key)
-      return item ? (JSON.parse(item) as LocalStorageValues[K]) : null
+      return item ? (JSON.parse(item) as LocalStorageReturnTypeOfKey<K>) : null
     } catch (error) {
       console.error(`Error retrieving item from localStorage: ${error}`)
       return null
     }
   }
 
-  static setItem<K extends LocalStorageKeys>(key: K, value: LocalStorageValues[K]): void {
+  static setItem<K extends LocalStorageKeys>(key: K, value: LocalStorageReturnTypeOfKey<K>): void {
     try {
       const item = JSON.stringify(value)
       localStorage.setItem(key, item)
