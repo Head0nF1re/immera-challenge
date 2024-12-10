@@ -4,6 +4,7 @@ import {
   registerSchema,
   updatePasswordSchema,
   updateProfileSchema,
+  type LoginFormInitialValues,
 } from '@/types/api/authApiTypes'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
@@ -11,6 +12,7 @@ import { zodResolver } from '@primevue/forms/resolvers/zod'
 import { ref } from 'vue'
 import { getUserInfo, login, logout, register, updatePassword, updateProfile } from '@/api/authApi'
 import { useToast } from 'primevue'
+import { LocalStorage } from '@/utils/localStorage'
 
 export const useRegister = () => {
   const router = useRouter()
@@ -36,6 +38,14 @@ export const useLogin = () => {
   const route = useRoute()
   const authStore = useAuthStore()
 
+  const clearFormLocalStorage = () => {
+    LocalStorage.removeItem('formLogin_email')
+  }
+
+  const initialValues = ref<LoginFormInitialValues>({
+    email: LocalStorage.getItem('formLogin_email') ?? '',
+  })
+
   const resolver = ref(zodResolver(loginSchema))
 
   const mutation = useMutation({
@@ -45,10 +55,12 @@ export const useLogin = () => {
         authStore.storeUser(res.data)
         router.push((route.query.redirect as string) ?? '/')
       })
+
+      clearFormLocalStorage()
     },
   })
 
-  return { resolver, mutation }
+  return { resolver, mutation, initialValues, clearFormLocalStorage }
 }
 
 export const useLogout = () => {

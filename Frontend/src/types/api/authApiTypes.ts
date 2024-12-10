@@ -46,6 +46,7 @@ export const loginSchema = z.object({
 })
 
 export type LoginRequest = z.infer<typeof loginSchema>
+export type LoginFormInitialValues = Omit<LoginRequest, 'password'>
 
 export const updateProfileSchema = z.object({
   name: nameSchema,
