@@ -2,8 +2,9 @@ import axios, { type InternalAxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
 import { getCsrfCookie } from '@/api/authApi'
 import router from '@/router'
-import { LocalStorage } from './localStorage'
 import { useAuthStore } from '@/stores/authStore'
+import { LocalStorage } from './localStorage'
+import ERROR_MESSAGES from '@/constants/error'
 
 const httpClient = axios.create({
   baseURL: __API_BASE_URL__,
@@ -35,6 +36,15 @@ const redirectIfUnauthorized = (error) => {
 
   if (status === 404) {
     router.push({ name: '404' })
+  }
+
+  if (status === 403) {
+    if (error.response.data.message === ERROR_MESSAGES.PHONE_NOT_VERIFIED) {
+      LocalStorage.setItem('alertMessage', ERROR_MESSAGES.PHONE_NOT_VERIFIED)
+      router.push({ name: '403' })
+    }
+
+    router.push({ name: '403' })
   }
 
   throw error

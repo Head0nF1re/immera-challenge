@@ -2,12 +2,12 @@ import { useAuthStore } from '@/stores/authStore'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const HomeView = () => import('@/views/HomeView.vue')
-const LoginView = () => import('@/views/LoginView.vue')
-const RegisterView = () => import('@/views/RegisterView.vue')
-const ProfileView = () => import('@/views/ProfileView.vue')
-const AboutView = () => import('@/views/AboutView.vue')
-const NotFoundView = () => import('@/views/NotFoundView.vue')
-const ProductListView = () => import('@/views/ProductListView.vue')
+const LoginView = () => import('@/views/auth/LoginView.vue')
+const RegisterView = () => import('@/views/auth/RegisterView.vue')
+const ProfileView = () => import('@/views/auth/ProfileView.vue')
+const NotFoundView = () => import('@/views/errors/NotFoundView.vue')
+const ProductListView = () => import('@/views/products/ProductListView.vue')
+const ForbiddenView = () => import('@/views/errors/ForbiddenView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +47,11 @@ const router = createRouter({
       //     component: AboutView,
       //   },
       // ],
+    },
+    {
+      path: '/errors/403',
+      name: '403',
+      component: ForbiddenView,
     },
     {
       path: '/:pathMatch(.*)*',

@@ -4,6 +4,7 @@ export type LocalStorageValues = {
   user: IUser
   isDarkMode: boolean
   formLogin: LoginFormInitialValues
+  alertMessage: string
 }
 
 // Paths Type - Get nested string keys: https://stackoverflow.com/a/58436959/13866925
