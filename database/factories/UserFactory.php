@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Infrastructure\Extensions\Faker\pt_PT\PhoneNumber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -23,11 +24,20 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        /**
+         * While/If FakerPHP doesn't re-open the issue and merge the PR:
+         * - https://github.com/FakerPHP/Faker/issues/925
+         * 
+         * Note: the provider could be added globally if needed.
+         */
+        $ptFaker = fake('pt_PT');
+        $ptFaker->addProvider(new PhoneNumber($ptFaker));
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'phone_number' => fake('pt_PT')->unique()->e164PhoneNumber(), // not working as exptected
+            'phone_number' => $ptFaker->unique()->e164MobileNumber(),
             'phone_number_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
